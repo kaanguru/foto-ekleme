@@ -20,7 +20,7 @@ import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
 import { Folder, path, knownFolders } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
-import { HttpResponse } from "tns-core-modules/http";
+// import { HttpResponse } from "tns-core-modules/http";
 import { request, HTTPFormData, HTTPFormDataEntry } from "@klippa/nativescript-http";
 export default {
   data() {
@@ -36,7 +36,7 @@ export default {
     take() {
       camera
         .takePicture({
-          width:  300,
+          width: 300,
           height: 300,
           keepAspectRatio: true,
         })
@@ -70,8 +70,8 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
-      console.log('this.fileName :>> ', this.fileName);
-      console.log('this.photo.android :>> ', this.photo.android);
+      console.log("this.fileName :>> ", this.fileName);
+      console.log("this.photo.android :>> ", this.photo.android);
       const form = new HTTPFormData();
       const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), this.fileName, "image/jpeg");
       form.append("files", formFile);
@@ -80,11 +80,11 @@ export default {
         method: "POST",
         content: form,
       }).then(
-        (response: HttpResponse) => {
-          console.log('response :>> ', response);
+        (response) => {
+          console.log("response ID :>> ", response);
         },
         (e) => {
-          console.log('e :>> ', e);
+          console.log("e :>> ", e);
         }
       );
     },
