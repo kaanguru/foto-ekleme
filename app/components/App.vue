@@ -20,13 +20,15 @@ import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
 import { Folder, path, knownFolders } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
-
+// import { HttpResponse } from "tns-core-modules/http";
+import { request, HTTPFormData, HTTPFormDataEntry } from "@klippa/nativescript-http";
 export default {
   data() {
     return {
       // arrayPictures: [],
       photo: null,
       photoPath: "",
+      fileName: "",
       boyut: "",
     };
   },
@@ -34,8 +36,8 @@ export default {
     take() {
       camera
         .takePicture({
-          width:  60,
-          height: 60,
+          width: 300,
+          height: 300,
           keepAspectRatio: true,
         })
         .then((imageAsset) => {
@@ -44,10 +46,11 @@ export default {
           console.log("keepAspectRatio: " + imageAsset.options.keepAspectRatio);
           // SAVE IMAGE
           ImageSource.fromAsset(imageAsset).then((imageSource: ImageSource) => {
-            const fileName: string = "kus" + "-" + new Date().getTime() + ".jpg";
+            const fileName: string = "kus" + "-" + new Date().getTime() + ".jpeg";
+            this.fileName = fileName;
             const folderPath: string = knownFolders.documents().path;
             const filePath: string = path.join(folderPath, fileName);
-            const saved: boolean = imageSource.saveToFile(filePath, "jpg");
+            const saved: boolean = imageSource.saveToFile(filePath, "jpeg");
             if (saved) {
               console.log("Saved: " + filePath);
               this.photoPath = filePath;
@@ -67,6 +70,23 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
+      console.log("this.fileName :>> ", this.fileName);
+      console.log("this.photo.android :>> ", this.photo.android);
+      const form = new HTTPFormData();
+      const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), this.fileName, "image/jpeg");
+      form.append("files", formFile);
+      request({
+        url: "http://192.168.0.2:1515/upload",
+        method: "POST",
+        content: form,
+      }).then(
+        (response) => {
+          console.log("response ID :>> ", response);
+        },
+        (e) => {
+          console.log("e :>> ", e);
+        }
+      );
     },
     /*     takeResize() {
       
