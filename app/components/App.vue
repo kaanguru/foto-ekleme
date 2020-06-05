@@ -18,7 +18,7 @@
 import * as camera from "nativescript-camera";
 import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
-import { Folder, path, knownFolders } from "tns-core-modules/file-system";
+import { Folder, path, knownFolders, File } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
 import gql from "graphql-tag";
 
@@ -76,11 +76,14 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
+      const imageFile: File = File.fromPath(this.photoPath);
+      const binarySource = imageFile.readSync();
+      // const formFile = new HTTPFormDataEntry(binarySource, this.fileName, "image/jpeg");
       this.$apollo
         .mutate({
           mutation: UPLOAD,
           variables: {
-            file: new java.io.File(this.photoPath),
+            file: binarySource,
           },
         })
         .then((res) => {
