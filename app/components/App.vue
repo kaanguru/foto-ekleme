@@ -20,6 +20,7 @@ import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
 import { Folder, path, knownFolders } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
+import * as bghttp from "nativescript-background-http";
 
 export default {
   data() {
@@ -34,8 +35,8 @@ export default {
     take() {
       camera
         .takePicture({
-          width: 300,
-          height: 300,
+          width:  60,
+          height: 60,
           keepAspectRatio: true,
         })
         .then((imageAsset) => {
@@ -67,11 +68,10 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
-      var bghttp = require("nativescript-background-http");
       const session = bghttp.session("image-upload");
       const uploadParams = [
         {
-          name: "image",
+          name: "kus" + "-" + new Date().getTime() + ".jpg",
           filename: this.photoPath,
           mimeType: "image/jpeg",
         },
@@ -80,10 +80,13 @@ export default {
         url: "http://192.168.0.2:1515/upload",
         method: "POST",
         headers: {
-          Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNTkxMjUzNDI4LCJleHAiOjE1OTM4NDU0Mjh9.SikJMj9KW5uBUfHkEYKqIV4YzlBpJseUzkn-dZOnYiE",
+          Authorization:
+            "Bearer " +
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNTkxMjUzNDI4LCJleHAiOjE1OTM4NDU0Mjh9.SikJMj9KW5uBUfHkEYKqIV4YzlBpJseUzkn-dZOnYiE",
         },
+        description: "Uploading " + uploadParams[0].name,
       };
-      const task = session.multipartUpload(uploadParams, request);
+      const task = session.uploadFile(this.photoPath, request);
       task.on("progress", (e) => {
         console.log("uploaded " + e.currentBytes + " / " + e.totalBytes);
       });
@@ -96,7 +99,7 @@ export default {
         this.busy = false;
       });
       task.on("complete", (e) => {
-        console.log("COMPLETE: received " + e.responseCode + " code");
+        console.log("COMPLETE: received " + e + " code");
         this.busy = false;
       });
     },
