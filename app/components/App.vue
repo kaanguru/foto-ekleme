@@ -36,8 +36,8 @@ export default {
     take() {
       camera
         .takePicture({
-          width: 60,
-          height: 60,
+          width:  300,
+          height: 300,
           keepAspectRatio: true,
         })
         .then((imageAsset) => {
@@ -46,11 +46,11 @@ export default {
           console.log("keepAspectRatio: " + imageAsset.options.keepAspectRatio);
           // SAVE IMAGE
           ImageSource.fromAsset(imageAsset).then((imageSource: ImageSource) => {
-            const fileName: string = "kus" + "-" + new Date().getTime() + ".jpg";
+            const fileName: string = "kus" + "-" + new Date().getTime() + ".jpeg";
             this.fileName = fileName;
             const folderPath: string = knownFolders.documents().path;
             const filePath: string = path.join(folderPath, fileName);
-            const saved: boolean = imageSource.saveToFile(filePath, "jpg");
+            const saved: boolean = imageSource.saveToFile(filePath, "jpeg");
             if (saved) {
               console.log("Saved: " + filePath);
               this.photoPath = filePath;
@@ -73,17 +73,19 @@ export default {
       console.log('this.fileName :>> ', this.fileName);
       console.log('this.photo.android :>> ', this.photo.android);
       const form = new HTTPFormData();
-      const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), this.fileName, "image/jpg");
-      form.append("file", formFile);
+      const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), this.fileName, "image/jpeg");
+      form.append("files", formFile);
       request({
         url: "http://192.168.0.2:1515/upload",
         method: "POST",
-        headers: { "Content-Type": "multipart/form-data" },
         content: form,
       }).then(
         (response: HttpResponse) => {
+          console.log('response :>> ', response);
         },
-        (e) => {}
+        (e) => {
+          console.log('e :>> ', e);
+        }
       );
     },
     /*     takeResize() {
