@@ -57,7 +57,8 @@ export default {
             }
             const loadedImage: ImageSource = ImageSource.fromFileSync(filePath);
             this.photo = loadedImage;
-            console.log("this.photo :>> ", this.photo);
+            console.log("this.photo.android :>> ", this.photo.android);
+            console.log("this.photo android  type :>> ", typeof(this.photo.android));
           });
         })
         .catch((err) => {
@@ -70,13 +71,16 @@ export default {
       fetch("http://192.168.0.2:1515/upload", {
         method: "POST",
         headers: { "Content-Type": "multipart/form-data" },
-        body: JSON.stringify(this.photo),
+        body: this.photo.android,
       })
         .then((r) => r.json())
         .then((response) => {
           const result = response.json;
+          console.log('result :>> ', result);
         })
-        .catch((e) => {});
+        .catch((e) => {
+          console.log('e :>> ', e);
+        });
     },
     /*     takeResize() {
       
