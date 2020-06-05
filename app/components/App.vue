@@ -17,15 +17,6 @@ import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
 import { Folder, path, knownFolders } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
-import gql from "graphql-tag";
-
-const UPLOAD = gql`
-  mutation($file: Upload!) {
-    upload(file: $file) {
-      name
-    }
-  }
-`;
 
 export default {
   data() {
@@ -69,21 +60,8 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
-      this.$apollo
-        .mutate({
-          mutation: UPLOAD,
-          variables: {
-            file: this.photo,
-          },
-        })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
     },
-    /*     takeResize() {
+/*     takeResize() {
       
       camera
         .takePicture({
