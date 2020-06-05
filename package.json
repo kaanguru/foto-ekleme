@@ -4,6 +4,9 @@
   "description": "sunucuya resim gönderme denemesi",
   "author": "netlesh <netlesh@mail.ru>",
   "license": "MIT",
+  "scripts": {
+    "dev": "tns debug android --no-hmr"
+  },
   "nativescript": {
     "id": "com.cemkaan.resim",
     "templateVersion": "v2",
