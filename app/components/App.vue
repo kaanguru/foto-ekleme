@@ -20,7 +20,8 @@ import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
 import { Folder, path, knownFolders } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
-
+import { HttpResponse } from "tns-core-modules/http";
+import { request, HTTPFormData, HTTPFormDataEntry } from "@klippa/nativescript-http";
 export default {
   data() {
     return {
@@ -34,7 +35,7 @@ export default {
     take() {
       camera
         .takePicture({
-          width:  60,
+          width: 60,
           height: 60,
           keepAspectRatio: true,
         })
@@ -67,6 +68,26 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
+      const form = new HTTPFormData();
+      // form.append("value", "Test");
+      // You can also append ArrayBuffer/File/Blob/native(such as java.io.File and NSData.dataWithContentsOfFile) objects directly to form here, but please keep in mind that only the File object has the ability to set a filename. And only Blob/File objects have the ability to set a content type.
+      // Use HTTPFormDataEntry if you want more control.
+
+      // formFile data can be a JavaScript ArrayBuffer but also native file objects like java.io.File and NSData.dataWithContentsOfFile.
+      const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), "test.jpg", "image/jpg");
+      form.append("file", formFile);
+
+      request({
+        url: "http://192.168.0.2:1515/upload",
+        method: "POST",
+        headers: { 'Content-Type': 'multipart/form-data' },
+        content: form,
+      }).then(
+        (response: HttpResponse) => {
+          // Argument (response) is HttpResponse
+        },
+        (e) => {}
+      );
     },
     /*     takeResize() {
       
