@@ -80,7 +80,7 @@ export default {
         .mutate({
           mutation: UPLOAD,
           variables: {
-            file: this.photo,
+            file: new java.io.File(this.photoPath),
           },
         })
         .then((res) => {
