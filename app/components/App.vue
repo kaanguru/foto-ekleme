@@ -1,12 +1,15 @@
 <template>
   <Page>
     <ActionBar>
-      <Label class="title" text="Fotoğraf Ekleme" col="1" />
+      <Label class="title" text="300 px Fotoğraf Ekleme" col="1" />
     </ActionBar>
 
-    <GridLayout columns="*" rows="330,60">
+    <GridLayout columns="*" rows="330,60,60,60">
       <Image :src="photo" stretch="aspectFill" row="0" height="300" width="300" />
-      <Button text="foto çek" @tap="take" row="1" />
+      <!-- <Image :src="file" stretch="aspectFill" row="0" height="300" width="300" /> -->
+      <Button text="foto çek" @tap="take" row="1" class="p-5 font-weight-bold" />
+      <Label v-show="boyut.length > 0" :text="'Resim boyutu: ' + boyut" textWrap="true" row="2" class="text-center h3 p-5" />
+      <Button v-show="photo" text="Gönder" @tap="send" row="3" class="font-weight-bold" />
     </GridLayout>
   </Page>
 </template>
@@ -23,6 +26,7 @@ export default {
     return {
       arrayPictures: [],
       photo: null,
+      boyut: ""
     };
   },
   methods: {
