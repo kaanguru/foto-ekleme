@@ -24,21 +24,23 @@ import { isAndroid, isIOS } from "tns-core-modules/platform";
 export default {
   data() {
     return {
-      arrayPictures: [],
+      // arrayPictures: [],
       photo: null,
-      boyut: ""
+      photoPath: "",
+      boyut: "",
     };
   },
   methods: {
     take() {
       camera
         .takePicture({
-          width: 300,
-          height: 300,
+          width:  60,
+          height: 60,
           keepAspectRatio: true,
         })
         .then((imageAsset) => {
           console.log("Size: " + imageAsset.options.width + "x" + imageAsset.options.height);
+          this.boyut = imageAsset.options.width + "x" + imageAsset.options.height;
           console.log("keepAspectRatio: " + imageAsset.options.keepAspectRatio);
           // SAVE IMAGE
           ImageSource.fromAsset(imageAsset).then((imageSource: ImageSource) => {
@@ -48,6 +50,7 @@ export default {
             const saved: boolean = imageSource.saveToFile(filePath, "jpg");
             if (saved) {
               console.log("Saved: " + filePath);
+              this.photoPath = filePath;
               console.log("Image saved successfully!");
             } else {
               console.log("not saved");
@@ -65,7 +68,7 @@ export default {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
     },
-/*     takeResize() {
+    /*     takeResize() {
       
       camera
         .takePicture({
