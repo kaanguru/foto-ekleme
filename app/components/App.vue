@@ -34,7 +34,7 @@ export default {
     take() {
       camera
         .takePicture({
-          width:  60,
+          width: 60,
           height: 60,
           keepAspectRatio: true,
         })
@@ -67,6 +67,16 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
+      fetch("http://192.168.0.2:1515/upload", {
+        method: "POST",
+        headers: { "Content-Type": "multipart/form-data" },
+        body: JSON.stringify(this.photo),
+      })
+        .then((r) => r.json())
+        .then((response) => {
+          const result = response.json;
+        })
+        .catch((e) => {});
     },
     /*     takeResize() {
       
