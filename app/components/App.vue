@@ -67,6 +67,38 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
+      var bghttp = require("nativescript-background-http");
+      const session = bghttp.session("image-upload");
+      const uploadParams = [
+        {
+          name: "image",
+          filename: this.photoPath,
+          mimeType: "image/jpeg",
+        },
+      ];
+      const request = {
+        url: "http://192.168.0.2:1515/upload",
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNTkxMjUzNDI4LCJleHAiOjE1OTM4NDU0Mjh9.SikJMj9KW5uBUfHkEYKqIV4YzlBpJseUzkn-dZOnYiE",
+        },
+      };
+      const task = session.multipartUpload(uploadParams, request);
+      task.on("progress", (e) => {
+        console.log("uploaded " + e.currentBytes + " / " + e.totalBytes);
+      });
+      task.on("error", (e) => {
+        console.log("ERROR: received " + e.responseCode + " code.");
+        this.busy = false;
+      });
+      task.on("responded", (e) => {
+        console.log("RESPOND: received " + e.responseCode + " code. Server sent: " + e.data);
+        this.busy = false;
+      });
+      task.on("complete", (e) => {
+        console.log("COMPLETE: received " + e.responseCode + " code");
+        this.busy = false;
+      });
     },
     /*     takeResize() {
       
