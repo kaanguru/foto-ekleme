@@ -1,15 +1,12 @@
 <template>
   <Page>
     <ActionBar>
-      <Label class="title" text="300 px Fotoğraf Ekleme" col="1" />
+      <Label class="title" text="Fotoğraf Ekleme" col="1" />
     </ActionBar>
 
-    <GridLayout columns="*" rows="330,60,60,60">
+    <GridLayout columns="*" rows="330,60">
       <Image :src="photo" stretch="aspectFill" row="0" height="300" width="300" />
-      <!-- <Image :src="file" stretch="aspectFill" row="0" height="300" width="300" /> -->
-      <Button text="foto çek" @tap="take" row="1" class="p-5 font-weight-bold" />
-      <Label v-show="boyut.length > 0" :text="'Resim boyutu: ' + boyut" textWrap="true" row="2" class="text-center h3 p-5" />
-      <Button v-show="photo" text="Gönder" @tap="send" row="3" class="font-weight-bold" />
+      <Button text="foto çek" @tap="take" row="1" />
     </GridLayout>
   </Page>
 </template>
@@ -33,10 +30,8 @@ const UPLOAD = gql`
 export default {
   data() {
     return {
-      // arrayPictures: [],
+      arrayPictures: [],
       photo: null,
-      photoPath: "",
-      boyut: "",
     };
   },
   methods: {
@@ -49,7 +44,6 @@ export default {
         })
         .then((imageAsset) => {
           console.log("Size: " + imageAsset.options.width + "x" + imageAsset.options.height);
-          this.boyut = imageAsset.options.width + "x" + imageAsset.options.height;
           console.log("keepAspectRatio: " + imageAsset.options.keepAspectRatio);
           // SAVE IMAGE
           ImageSource.fromAsset(imageAsset).then((imageSource: ImageSource) => {
@@ -59,7 +53,6 @@ export default {
             const saved: boolean = imageSource.saveToFile(filePath, "jpg");
             if (saved) {
               console.log("Saved: " + filePath);
-              this.photoPath = filePath;
               console.log("Image saved successfully!");
             } else {
               console.log("not saved");
