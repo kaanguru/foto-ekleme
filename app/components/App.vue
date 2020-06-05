@@ -20,6 +20,7 @@ import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
 import { Folder, path, knownFolders } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
+import axios from 'axios';
 
 export default {
   data() {
@@ -67,6 +68,16 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
+      axios
+      .post(`http://192.168.0.2:1515/upload`, this.photo, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      });
     },
     /*     takeResize() {
       
