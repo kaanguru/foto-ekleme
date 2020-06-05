@@ -20,7 +20,6 @@ import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
 import { Folder, path, knownFolders, File } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
-// import { HttpResponse } from "tns-core-modules/http";
 import { request, HTTPFormData, HTTPFormDataEntry } from "@klippa/nativescript-http";
 export default {
   data() {
@@ -84,10 +83,13 @@ export default {
       request({
         url: "http://192.168.0.2:1515/upload",
         method: "POST",
+        headers: {  Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNTkxMjUzNDI4LCJleHAiOjE1OTM4NDU0Mjh9.SikJMj9KW5uBUfHkEYKqIV4YzlBpJseUzkn-dZOnYiE", },
         content: form,
       }).then(
         (response) => {
-          console.log("response ID :>> ", response);
+          console.log("response ID :>> ", response.content.toJSON()[0].id);
+          console.log("response thumb url :>> ", response.content.toJSON()[0].formats.thumbnail.url);
+          console.log("response large url :>> ", response.content.toJSON()[0].formats.large.url);
         },
         (e) => {
           console.log("e :>> ", e);
