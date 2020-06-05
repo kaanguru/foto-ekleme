@@ -18,7 +18,7 @@
 import * as camera from "nativescript-camera";
 import { Image } from "tns-core-modules/ui/image";
 import { ImageSource, fromFile, fromResource, fromBase64 } from "tns-core-modules/image-source";
-import { Folder, path, knownFolders } from "tns-core-modules/file-system";
+import { Folder, path, knownFolders, File } from "tns-core-modules/file-system";
 import { isAndroid, isIOS } from "tns-core-modules/platform";
 // import { HttpResponse } from "tns-core-modules/http";
 import { request, HTTPFormData, HTTPFormDataEntry } from "@klippa/nativescript-http";
@@ -73,7 +73,13 @@ export default {
       console.log("this.fileName :>> ", this.fileName);
       console.log("this.photo.android :>> ", this.photo.android);
       const form = new HTTPFormData();
-      const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), this.fileName, "image/jpeg");
+
+      const imageFile: File = File.fromPath(this.photoPath);
+      const binarySource = imageFile.readSync();
+      const formFile = new HTTPFormDataEntry(binarySource, this.fileName, "image/jpeg");
+      // android const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), this.fileName, "image/jpeg");
+      // ios const formFile = new HTTPFormDataEntry(NSData.dataWithContentsOfFile(this.photoPath), this.fileName, "image/jpeg");
+
       form.append("files", formFile);
       request({
         url: "http://192.168.0.2:1515/upload",
@@ -89,7 +95,7 @@ export default {
       );
     },
     /*     takeResize() {
-      
+
       camera
         .takePicture({
           width: 500, //these are in device independent pixels
