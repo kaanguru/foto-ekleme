@@ -28,6 +28,7 @@ export default {
       // arrayPictures: [],
       photo: null,
       photoPath: "",
+      fileName: "",
       boyut: "",
     };
   },
@@ -46,6 +47,7 @@ export default {
           // SAVE IMAGE
           ImageSource.fromAsset(imageAsset).then((imageSource: ImageSource) => {
             const fileName: string = "kus" + "-" + new Date().getTime() + ".jpg";
+            this.fileName = fileName;
             const folderPath: string = knownFolders.documents().path;
             const filePath: string = path.join(folderPath, fileName);
             const saved: boolean = imageSource.saveToFile(filePath, "jpg");
@@ -68,23 +70,18 @@ export default {
     send() {
       console.log("this.photoPath :>> ", this.photoPath);
       console.log("this.photo :>> ", this.photo);
+      console.log('this.fileName :>> ', this.fileName);
+      console.log('this.photo.android :>> ', this.photo.android);
       const form = new HTTPFormData();
-      // form.append("value", "Test");
-      // You can also append ArrayBuffer/File/Blob/native(such as java.io.File and NSData.dataWithContentsOfFile) objects directly to form here, but please keep in mind that only the File object has the ability to set a filename. And only Blob/File objects have the ability to set a content type.
-      // Use HTTPFormDataEntry if you want more control.
-
-      // formFile data can be a JavaScript ArrayBuffer but also native file objects like java.io.File and NSData.dataWithContentsOfFile.
-      const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), "test.jpg", "image/jpg");
+      const formFile = new HTTPFormDataEntry(new java.io.File(this.photoPath), this.fileName, "image/jpg");
       form.append("file", formFile);
-
       request({
         url: "http://192.168.0.2:1515/upload",
         method: "POST",
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: { "Content-Type": "multipart/form-data" },
         content: form,
       }).then(
         (response: HttpResponse) => {
-          // Argument (response) is HttpResponse
         },
         (e) => {}
       );
